@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-4_2==-qzn9^l(a#q1_=9_yw*ziav^ixu5e88$97hwegl0l@&6+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [os.environ.get('PYTHOANYWHERE_URL'), ]
 
 AUTH_USER_MODEL = 'lili_api.UsuarioLili'
 
