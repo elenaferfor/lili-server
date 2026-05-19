@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 
 # from django.conf.global_settings import AUTH_USER_MODEL
 
-load_dotenv()
+load_dotenv(Path(__file__).resolve().parent / 'config' / '.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-4_2==-qzn9^l(a#q1_=9_yw*ziav^ixu5e88$97hwegl0l@&6+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [os.environ.get('PYTHOANYWHERE_URL'), ]
+ALLOWED_HOSTS = [os.environ.get('PYTHONANYWHERE_URL'), ]
 
 AUTH_USER_MODEL = 'lili_api.UsuarioLili'
 
