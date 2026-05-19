@@ -198,6 +198,7 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
     'COMPONENT_SPLIT_REQUEST': True,
     'SERVERS': [
+        {'url': 'https://elenaferfor.pythonanywhere.com', 'description': 'Servidor de producción'},
         {'url': 'http://localhost:8000', 'description': 'Servidor local'},
     ],
     'TAGS': [
