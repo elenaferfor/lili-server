@@ -39,7 +39,7 @@ class Libro(models.Model):
     fecha_actualizacion = models.DateField(auto_now=True)
     editorial = models.ForeignKey(Editorial, on_delete=models.SET_NULL, blank=True, null=True)
 
-    autores = models.ManyToManyField(Autor, related_name='libros')
+    autores = models.ManyToManyField(Autor, related_name='libros', blank=True, null=True)
 
     class Meta:
         verbose_name_plural = 'Libros'

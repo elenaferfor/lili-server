@@ -14,7 +14,7 @@ class LibroFilter(django_filters.FilterSet):
 
     class Meta:
         model = Libro
-        fields = ['autores']
+        fields = ['autores', 'editorial']
 
 class UsuarioLibroFilter(django_filters.FilterSet):
     categoria_nombre = filters.CharFilter(

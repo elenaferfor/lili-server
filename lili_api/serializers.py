@@ -51,10 +51,15 @@ class EditorialSerializer(serializers.ModelSerializer):
         fields = ['id', 'nombre', 'libros']
 
 class LibroSerializer(serializers.ModelSerializer):
-    autores = serializers.PrimaryKeyRelatedField(queryset=Autor.objects.all(), many=True, write_only=True)
+    ano_pub = serializers.DateField(required=False, allow_null=True, default=None)
+    ano_pub_og = serializers.DateField(required=False, allow_null=True, default=None)
+    autores = serializers.PrimaryKeyRelatedField(required=False, queryset=Autor.objects.all(), many=True,
+                                                 write_only=True, default=None)
     autores_detalle = AutorNombreSerializer(source="autores", many=True, read_only=True)
-    editorial = serializers.PrimaryKeyRelatedField(queryset=Editorial.objects.all(), write_only=True, allow_null=True, allow_empty=True)
+    editorial = serializers.PrimaryKeyRelatedField(required=False, queryset=Editorial.objects.all(), write_only=True,
+                                                   allow_null=True, allow_empty=True, default=None)
     editorial_detalle = EditorialNombreSerializer(source="editorial", read_only=True)
+
     class Meta:
         model = Libro
         fields = ['id', 'isbn', 'titulo', 'formato',
@@ -63,11 +68,23 @@ class LibroSerializer(serializers.ModelSerializer):
                   'openlibrary_key', 'fecha_actualizacion',
                   'autores', 'autores_detalle', 'editorial', 'editorial_detalle']
 
-        def create(self, validated_data):
-            autores = validated_data.pop('autores')
-            libro = Libro.objects.create(**validated_data)
-            libro.autores.set(autores)
-            return libro
+    def to_internal_value(self, data):
+        if data.get('ano_pub') == "":
+            data = data.copy()
+            data['ano_pub'] = None
+        if data.get('ano_pub_og') == "":
+            data = data.copy()
+            data['ano_pub_og'] = None
+        if data.get('editorial') == 0:
+            data = data.copy()
+            data['editorial'] = None
+        return super().to_internal_value(data)
+
+    def create(self, validated_data):
+        autores = validated_data.pop('autores')
+        libro = Libro.objects.create(**validated_data)
+        libro.autores.set(autores)
+        return libro
 
 class AmistadSerializer(serializers.ModelSerializer):
     usuario_a = serializers.PrimaryKeyRelatedField(queryset=UsuarioLili.objects.all(), write_only=True)
