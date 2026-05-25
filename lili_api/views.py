@@ -355,6 +355,9 @@ class UsuarioLibroView(ModelViewSet):
         if usuario_id:
             libros_publicos = libros_publicos.filter(usuario__pk=usuario_id)
 
+        ordering = request.query_params.get('ordering', '-fecha_anadido')
+        libros_publicos = libros_publicos.order_by(ordering)
+
         return Response(
             UsuarioLibroSerializer(libros_publicos, many=True).data,
             status=status.HTTP_200_OK
