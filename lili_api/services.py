@@ -22,10 +22,13 @@ def obtener_libro_por_isbn(isbn):
 
 def _fetch_edicion(isbn):
     url = f"{OPENLIBRARY_BASE_URL}/isbn/{isbn}.json"
-    response = requests.get(url, timeout=5, headers=HEADERS)
-    if response.status_code != 200:
+    try:
+        response = requests.get(url, timeout=10, headers=HEADERS)
+        if response.status_code != 200:
+            return None
+        return response.json()
+    except requests.exceptions.RequestException:
         return None
-    return response.json()
 
 
 def _fetch_obra(edicion):
@@ -37,10 +40,13 @@ def _fetch_obra(edicion):
         return None
 
     url = f"{OPENLIBRARY_BASE_URL}{obra_key}.json"
-    response = requests.get(url, timeout=5, headers=HEADERS)
-    if response.status_code != 200:
+    try:
+        response = requests.get(url, timeout=10, headers=HEADERS)
+        if response.status_code != 200:
+            return None
+        return response.json()
+    except requests.exceptions.RequestException:
         return None
-    return response.json()
 
 def _mapear_libro(isbn, edicion, obra):
     return {
@@ -108,10 +114,13 @@ def _resolver_autores(edicion):
 
 def _fetch_nombre_autor(autor_key):
     url = f"{OPENLIBRARY_BASE_URL}{autor_key}.json"
-    response = requests.get(url, timeout=5, headers=HEADERS)
-    if response.status_code != 200:
+    try:
+        response = requests.get(url, timeout=10, headers=HEADERS)
+        if response.status_code != 200:
+            return None
+        return response.json().get("name")
+    except requests.exceptions.RequestException:
         return None
-    return response.json().get("name")
 
 def _resolver_editorial(edicion):
     editores = edicion.get("publishers", [])
