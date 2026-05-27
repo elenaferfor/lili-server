@@ -1,3 +1,5 @@
+import os
+
 import requests
 from .models import Libro, Autor, Editorial
 from datetime import date
@@ -5,6 +7,10 @@ import re
 
 # Archivo para usar Open Library como API externa
 OPENLIBRARY_BASE_URL = "https://openlibrary.org"
+
+HEADERS = {
+    "User-Agent": f'LiliApp/1.0 (${os.environ.get("CONTACT_RECIPIENT_EMAIL")}/)'
+}
 
 def obtener_libro_por_isbn(isbn):
     edicion = _fetch_edicion(isbn)
@@ -16,7 +22,7 @@ def obtener_libro_por_isbn(isbn):
 
 def _fetch_edicion(isbn):
     url = f"{OPENLIBRARY_BASE_URL}/isbn/{isbn}.json"
-    response = requests.get(url, timeout=5)
+    response = requests.get(url, timeout=5, headers=HEADERS)
     if response.status_code != 200:
         return None
     return response.json()
@@ -31,7 +37,7 @@ def _fetch_obra(edicion):
         return None
 
     url = f"{OPENLIBRARY_BASE_URL}{obra_key}.json"
-    response = requests.get(url, timeout=5)
+    response = requests.get(url, timeout=5, headers=HEADERS)
     if response.status_code != 200:
         return None
     return response.json()
@@ -102,7 +108,7 @@ def _resolver_autores(edicion):
 
 def _fetch_nombre_autor(autor_key):
     url = f"{OPENLIBRARY_BASE_URL}{autor_key}.json"
-    response = requests.get(url, timeout=5)
+    response = requests.get(url, timeout=5, headers=HEADERS)
     if response.status_code != 200:
         return None
     return response.json().get("name")
