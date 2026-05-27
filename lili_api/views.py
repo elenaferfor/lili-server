@@ -428,29 +428,33 @@ class UsuarioLibroView(ModelViewSet):
                 {
                     "serie": "La Tumba Sellada", # o ID
                     "num_en_serie": 1
+                    "volumenes": 3
                 }
         """
         usuario_libro = self.get_object()
-        serie = request.data.get('serie')
+        serie_data = request.data.get('serie')
         num_en_serie = request.data.get('num_en_serie')
+        volumenes = request.data.get('volumenes')
+        volumenes = int(volumenes) if volumenes is not None else 0
 
-        if not serie:
+        if not serie_data:
             return Response(
                 {"error": "Es necesario indicar la serie"},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         # Comprobar si serie es id o nombre
-        if isinstance(serie, int):
-            serie, _ = Serie.objects.get_or_create(
-                id=serie,
+        if isinstance(serie_data, int):
+            serie, created = Serie.objects.update_or_create(
+                id=serie_data,
                 usuario=request.user,
+                defaults={'volumenes': volumenes},
             )
         else:
-            serie, _ = Serie.objects.get_or_create(
-                nombre=serie,
+            serie, created = Serie.objects.update_or_create(
+                nombre=serie_data,
                 usuario=request.user,
-                defaults={'volumenes': 0}
+                defaults={'volumenes': volumenes}
             )
 
         # Asignar serie y num en serie a usuario_libro
@@ -459,11 +463,11 @@ class UsuarioLibroView(ModelViewSet):
         usuario_libro.save()
 
         return Response(
-        {
+            {
                 'usuario_libro': UsuarioLibroSerializer(usuario_libro).data,
                 'serie': SerieSerializer(serie).data,
             },
-            status=status.HTTP_201_CREATED if serie else status.HTTP_200_OK
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK
         )
 
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]

@@ -60,7 +60,7 @@ class UsuarioLili(AbstractUser):
 class Serie (models.Model):
     usuario = models.ForeignKey(UsuarioLili, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=120, blank=False, null=False)
-    volumenes = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(1)])
+    volumenes = models.IntegerField(blank=True, null=True, validators=[MinValueValidator(0)])
 
     class Meta:
         verbose_name_plural = 'Series'
